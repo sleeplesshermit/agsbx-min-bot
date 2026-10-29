@@ -87,8 +87,11 @@ MB of disk (binaries + logs) — sized for free bot tiers (e.g. 256–512 MB).
   - Panel env vars arrive as a `.env` file next to the app; the startup
     command must source it (`set -a; ../.env; set +a`) or the app sees
     no env at all.
-  - The room image may lack `curl`; `start.sh` needs it for the fallback
-    download path (a tiny shim on `PATH` works).
+  - The room image may lack `curl` **and** `wget`, both of which the
+    installer's download steps call. The repo bundles a zero-dependency
+    Node shim under `tools/` that answers to both names; `start.sh`
+    installs whichever is missing into `bin/` automatically, so nothing
+    needs to be improvised in the panel.
   - **Risk warning:** BotKeep's operator bans proxy hosting and detects
     it (an earlier account was suspended with that exact reason). This
     package does nothing to disguise itself. Deploy there only if you
@@ -123,5 +126,7 @@ start.sh         env check, vendor seeding, installer runner + supervisor
 env.example      the env contract (placeholders only)
 vendor/          argosbx.sh (bundled installer); xray/cloudflared binaries
                  are fetched per Deploy step 3 and git-ignored
+tools/           curl + wget Node shims for images that ship neither;
+                 start.sh auto-installs them into bin/ when missing
 Dockerfile       OPTIONAL minimal Docker variant (untested where authored)
 ```
