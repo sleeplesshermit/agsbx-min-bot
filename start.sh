@@ -38,6 +38,21 @@ if command -v node >/dev/null 2>&1 && [ -f server.js ]; then
   node server.js >> logs/web.log 2>&1 &
 fi
 
+# Some room images ship neither curl nor wget (e.g. BotKeep), but the
+# argosbx installer's download steps need one of them. tools/ bundles a
+# zero-dependency Node shim that answers to both names; install whichever
+# is missing into bin/ and put bin/ on PATH.
+for toolname in curl wget; do
+  if ! command -v "$toolname" >/dev/null 2>&1 && [ -f "tools/$toolname" ]; then
+    cp -f "tools/$toolname" "bin/$toolname" && chmod +x "bin/$toolname"
+    echo "[agsbx-min] no system $toolname — using bundled Node shim"
+  fi
+done
+case ":$PATH:" in
+  *":$PWD/bin:"*) ;;
+  *) export PATH="$PWD/bin:$PATH" ;;
+esac
+
 # Installer source: bundled copy first, previously fetched copy second,
 # download (GitHub, jsDelivr fallback) only when neither exists.
 INSTALLER=""
