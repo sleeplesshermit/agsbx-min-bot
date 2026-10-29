@@ -1,6 +1,6 @@
 {
   "name": "agsbx-min-bot",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Minimal argosbx (xray + Cloudflare tunnel) runner for Discord-bot hosting rooms. No SSH, no TTYD.",
   "main": "index.js",
   "private": true
